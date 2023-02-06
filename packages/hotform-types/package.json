@@ -1,0 +1,26 @@
+{
+  "name": "@hotform/types",
+  "version": "0.0.0",
+  "description": "TypeScript definitions for hotform.",
+  "author": "Derry Sucari <derrysucari01@gmail.com>",
+  "bugs": {
+    "url": "https://github.com/hotform/hotform/issues"
+  },
+  "files": [
+    "build/"
+  ],
+  "homepage": "https://github.com/hotform/hotform#readme",
+  "license": "MIT",
+  "main": "build/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "directory": "packages/hotform-types",
+    "type": "git",
+    "url": "git+https://github.com/hotform/hotform.git"
+  },
+  "devDependencies": {
+    "@types/react": "^16.0.0"
+  }
+}
