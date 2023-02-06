@@ -1,0 +1,10 @@
+{
+  "command": {
+    "create": {
+      "license": "MIT"
+    }
+  },
+  "npmClient": "yarn",
+  "useWorkspaces": true,
+  "version": "independent"
+}
