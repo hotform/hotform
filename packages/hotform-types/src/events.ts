@@ -5,7 +5,10 @@ export type HotFormChangeEventHandler = React.ChangeEventHandler<any>;
 export type HotFormFocusEventHandler = React.FocusEventHandler<any>;
 
 export interface HotFormFormValidityEvent<T>{
+  /** Hot form schema field values. */
   fieldValues: T;
+  
+  /** Function to update `submitting` state. */
   setSubmitting: Utils.SetStateWithCallback<boolean>;
 }
 
