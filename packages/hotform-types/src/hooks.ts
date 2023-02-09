@@ -7,7 +7,33 @@ export interface UseHotFormProps<T>{
   /** If set to `true`, the field that changes its value will be validated. By default `true` is used. */
   hotField?: boolean;
   
-  /** Initial hot form schema. */
+  /**
+   * Initial hot form schema.
+   * 
+   * Simple example:
+   * 
+   * ```ts
+   * interface UserData{
+   *   password: string;
+   *   username: string;
+   * }
+   * 
+   * const userSchema: HotFormSchema<UserData> = {
+   *   password: {
+   *     valid: true,
+   *     validator: (value: string): boolean => !!value.length,
+   *     value: ''
+   *   },
+   *   username: {
+   *     valid: true,
+   *     validator: (value: string): boolean => !!value.length,
+   *     value: ''
+   *   }
+   * };
+   * 
+   * console.log(JSON.stringify(userSchema, null, 2));
+   * ```
+   * */
   initialSchema: Schema.HotFormSchema<T>;
   
   /** The `onInvalid` callback is executed when the field values are invalid and the form is submitted. */
@@ -37,10 +63,10 @@ export interface UseHotFormReturnType<T>{
   handleSubmit: React.FormEventHandler<HTMLFormElement>;
   
   /** Function to reset hot form schema. */
-  resetHotFormSchema: ResetHotFormSchema;
+  resetSchema: ResetHotFormSchema;
   
   /** Function to set hot form field value. */
-  setHotFormFieldValue: Schema.SetHotFormFieldValue<T>;
+  setSchemaFieldValue: Schema.SetHotFormFieldValue<T>;
   
   /** `submitting` state. */
   submitting: boolean;
