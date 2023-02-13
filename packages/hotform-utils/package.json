@@ -1,0 +1,32 @@
+{
+  "name": "@hotform/utils",
+  "version": "0.0.0",
+  "description": "Utilities for hotform",
+  "author": "Derry Sucari <derrysucari01@gmail.com>",
+  "bugs": {
+    "url": "https://github.com/hotform/hotform/issues"
+  },
+  "files": [
+    "build/"
+  ],
+  "homepage": "https://github.com/hotform/hotform#readme",
+  "license": "MIT",
+  "main": "build/cjs/index.js",
+  "module": "build/esm/hotform-utils.production.min.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "directory": "packages/hotform-utils",
+    "type": "git",
+    "url": "git+https://github.com/hotform/hotform.git"
+  },
+  "types": "build/types/index.d.ts",
+  "devDependencies": {
+    "@hotform/types": "^1.1.2",
+    "@types/react": "^16.0.0"
+  },
+  "peerDependencies": {
+    "react": ">=16.0.0"
+  }
+}
