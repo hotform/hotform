@@ -1,14 +1,22 @@
 {
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^24.0.1",
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "@rollup/plugin-terser": "^0.4.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "chalk": "^4.1.2",
+    "execa": "^5.1.1",
     "lerna": "^6.4.1",
+    "minimist": "^1.2.7",
     "rimraf": "^4.1.2",
+    "rollup": "^3.14.0",
     "typescript": "^4.9.5"
   },
   "private": true,
   "scripts": {
     "build:clean": "rimraf ./packages/*/build",
-    "build:types": "tsc -p ./packages/hotform-types/tsconfig.json",
-    "build": "yarn build:clean && yarn build:types",
+    "build:rollup": "node ./scripts/rollup/build",
+    "build": "yarn build:rollup",
     "lerna": "lerna"
   },
   "workspaces": [
