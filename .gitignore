@@ -1,5 +1,7 @@
 *.log
 .vscode
+.yarn/*
+!.yarn/plugins
+!.yarn/releases
 build
 node_modules
-yarn.lock
