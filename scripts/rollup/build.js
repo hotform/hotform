@@ -2,10 +2,8 @@ const bundles = require('./bundles');
 const path = require('path');
 
 /* Dependencies */
-const argv = require('minimist')(process.argv.slice(2));
 const chalk = require('chalk');
 const execa = require('execa');
-const { filterPackages } = require('@lerna/filter-packages');
 const project = require('@lerna/project');
 const rollup = require('rollup');
 
@@ -67,23 +65,15 @@ const createBundle = async ({
   }
 }
 
-const getPackages = async () => {
-  const packages = await project.getPackages(path.resolve(__dirname, '..', '..'));
-  const exclude = argv.ignore;
-  const include = argv.scope;
-  return filterPackages(packages, include, exclude, true, true);
-}
-
 const main = async () => {
-  const packages = await getPackages();
-  for(const package of packages){
-    const packageJSON = package.toJSON();
-    const currentBundle = bundles.bundles.find(bundle => bundle.packageName === packageJSON.name);
-    if(currentBundle){
-      const tsconfigFilePath = path.resolve(package.location, 'tsconfig.json');
+  const packages = await project.getPackages(path.resolve(__dirname, '..', '..'));
+  for(const currentBundle of bundles.bundles){
+    const currentPackage = packages.find(package => package.name === currentBundle.packageName);
+    if(currentPackage){
+      const tsconfigFilePath = path.resolve(currentPackage.location, 'tsconfig.json');
       const rollupOptions = {
         external: currentBundle.external,
-        input: path.resolve(package.location, 'src', 'index.ts'),
+        input: path.resolve(currentPackage.location, 'src', 'index.ts'),
         plugins: [
           typescript({
             tsconfig: tsconfigFilePath
@@ -101,8 +91,8 @@ const main = async () => {
       
       const rollupOutputOptions = currentBundle.bundleTypes.map(bundleType => {
         const format = bundles.getFormat(bundleType);
-        const fileName = bundles.getFileName(bundleType, packageJSON.name);
-        const file = path.resolve(package.location, OUT_DIR, format, fileName);
+        const fileName = bundles.getFileName(bundleType, currentPackage.name);
+        const file = path.resolve(currentPackage.location, OUT_DIR, format, fileName);
         return {
           file,
           format,
@@ -117,26 +107,26 @@ const main = async () => {
       
       if(currentBundle.typeDeclarations){
         await createDeclarations({
-          packageLocation: package.location,
-          packageName: packageJSON.name,
+          packageLocation: currentPackage.location,
+          packageName: currentPackage.name,
           tsconfigFilePath
         });
       }
       
       await createBundle({
-        packageName: packageJSON.name,
+        packageName: currentPackage.name,
         rollupOptions,
         rollupOutputOptions
       });
       
       if([ bundles.BUNDLE_TYPE.CJS_DEV, bundles.BUNDLE_TYPE.CJS_PROD ].every(bundleType => currentBundle.bundleTypes.includes(bundleType))){
         await bundles.writeCJSEntryFile(
-          packageJSON.name,
-          path.resolve(package.location, OUT_DIR, bundles.BUNDLE_FORMAT.CJS)
+          currentPackage.name,
+          path.resolve(currentPackage.location, OUT_DIR, bundles.BUNDLE_FORMAT.CJS)
         );
       }
     }else{
-      console.log(`${chalk.bgYellow.black(` ${packageJSON.name} `)} bundle not found\n`);
+      console.log(`${chalk.bgYellow.black(` ${currentPackage.name} `)} bundle not found\n`);
     }
   }
 }
