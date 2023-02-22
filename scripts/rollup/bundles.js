@@ -28,6 +28,16 @@ const bundles = [
     external: [ 'react' ],
     packageName: '@hotform/utils',
     typeDeclarations: true
+  },
+  {
+    bundleTypes: [
+      BUNDLE_TYPE.CJS_DEV,
+      BUNDLE_TYPE.CJS_PROD,
+      BUNDLE_TYPE.ESM
+    ],
+    external: [ 'react' ],
+    packageName: '@hotform/react',
+    typeDeclarations: true
   }
 ];
 
