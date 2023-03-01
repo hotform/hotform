@@ -8,7 +8,28 @@ export interface UseHotFormProps<T>{
   /**
    * Initial hot form schema.
    * 
-   * Simple example:
+   * Simple examples:
+   * 
+   * JavaScript
+   * 
+   * ```js
+   * const userSchema = {
+   *   password: {
+   *     valid: true,
+   *     validator: value => !!value.length,
+   *     value: ''
+   *   },
+   *   username: {
+   *     valid: true,
+   *     validator: value => !!value.length,
+   *     value: ''
+   *   }
+   * };
+   * 
+   * console.log(JSON.stringify(userSchema, null, 2));
+   * ```
+   * 
+   * TypeScript
    * 
    * ```ts
    * interface UserData{
@@ -37,7 +58,7 @@ export interface UseHotFormProps<T>{
   /** The `onInvalid` callback is executed when the field values are invalid and the form is submitted. */
   onInvalid?: Events.HotFormValidityEventHandler<T>;
   
-  /** The `onValid` callback is executed when the form is reset. */
+  /** The `onReset` callback is executed when the form is reset. */
   onReset?: Events.HotFormResetEventHandler<T>;
   
   /** The `onValid` callback is executed when the field values are valid and the form is submitted. */
