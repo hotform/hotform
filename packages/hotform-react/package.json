@@ -1,7 +1,7 @@
 {
   "name": "@hotform/react",
   "version": "1.0.0",
-  "description": "Hotform is a Javascript library for building React custom forms",
+  "description": "@hotform/react is a JavaScript library for building React custom forms",
   "author": "Derry Sucari <derrysucari01@gmail.com>",
   "bugs": {
     "url": "https://github.com/hotform/hotform/issues"
