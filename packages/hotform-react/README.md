@@ -75,7 +75,7 @@ export default BasicForm;
 
 ### useHotForm
 
-`useHotForm: <T>(props: UseHotFormProps<T>) => UseHotFormReturnType<T>`
+`useHotForm: <T>(config: HotFormConfig<T>) => UseHotFormReturnType<T>`
 
 #### Properties (object)
 
@@ -144,13 +144,13 @@ The `onInvalid` callback is executed when the field values are invalid and the f
 
 #### onReset
 
-`onReset?: Events.HotFormResetEventHandler<T>`
+`onReset?: HotFormResetEventHandler<T>`
 
 The `onReset` callback is executed when the form is reset.
 
 #### onValid
 
-`onValid?: Events.HotFormValidityEventHandler<T>`
+`onValid?: HotFormValidityEventHandler<T>`
 
 The `onValid` callback is executed when the field values are valid and the form is submitted.
 

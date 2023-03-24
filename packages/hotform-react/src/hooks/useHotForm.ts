@@ -13,7 +13,7 @@ import {
   HotFormSchema,
   ResetHotFormSchema,
   SetHotFormSchemaFieldValue,
-  UseHotFormProps,
+  HotFormConfig,
   UseHotFormReturnType,
   ValidateHotFormSchemaField,
   ValidateAllHotFormSchemaFields
@@ -39,7 +39,7 @@ const useHotForm = <T>({
   onInvalid,
   onReset,
   onValid
-}: UseHotFormProps<T>): UseHotFormReturnType<T> => {
+}: HotFormConfig<T>): UseHotFormReturnType<T> => {
   const [ currentSchema, setCurrentSchema ] = React.useState(parseInitialSchema(initialSchema));
   const [ submitting, setSubmitting ] = useStateWithCallbackLazy(false);
   
@@ -167,7 +167,7 @@ export {
   HotFormSchema,
   ResetHotFormSchema,
   SetHotFormSchemaFieldValue,
-  UseHotFormProps,
+  HotFormConfig,
   UseHotFormReturnType
 };
 
