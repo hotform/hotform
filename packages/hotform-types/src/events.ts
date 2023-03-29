@@ -1,5 +1,3 @@
-import * as Utils from './utils';
-
 export type HotFormChangeEventHandler = React.ChangeEventHandler<any>;
 
 export type HotFormEventHandler = React.FormEventHandler<HTMLFormElement>;
@@ -11,7 +9,7 @@ export interface HotFormValidityEvent<T>{
   fieldValues: T;
   
   /** Function to update `submitting` state. */
-  setSubmitting: Utils.SetStateWithCallback<boolean>;
+  setSubmitting: (value: boolean) => void;
 }
 
 export type HotFormValidityEventHandler<T> = (e: HotFormValidityEvent<T>) => void;
