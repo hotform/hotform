@@ -20,8 +20,6 @@ export interface HotFormSchemaField<T>{
   value: T;
 }
 
-export type GetHotFormSchemaFieldValues<T> = () => T;
-
 export type HotFormSchema<T> = {
   [K in keyof T]: HotFormSchemaField<T[K]>;
 };
@@ -29,7 +27,3 @@ export type HotFormSchema<T> = {
 export type ResetHotFormSchema = () => void;
 
 export type SetHotFormSchemaFieldValue<T> = (fieldName: keyof T, newFieldValue: any) => void;
-
-export type ValidateAllHotFormSchemaFields = () => boolean;
-
-export type ValidateHotFormSchemaField<T> = (fieldName: keyof HotFormSchema<T>) => boolean;

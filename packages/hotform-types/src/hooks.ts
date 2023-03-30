@@ -1,10 +1,8 @@
 import * as Events from './events';
 import * as Schema from './schema';
+import * as Utils from './utils';
 
-export interface UseHotFormReturnType<T>{
-  /** Current hot form schema. */
-  currentSchema: Schema.HotFormSchema<T>;
-  
+export interface UseHotFormReturnType<T> extends Utils.HotFormValues<T>{
   /** Hot form focus event handler. */
   handleBlur: Events.HotFormFocusEventHandler;
   
@@ -22,7 +20,4 @@ export interface UseHotFormReturnType<T>{
   
   /** Function to set hot form field value. */
   setSchemaFieldValue: Schema.SetHotFormSchemaFieldValue<T>;
-  
-  /** `submitting` state. */
-  submitting: boolean;
 }
