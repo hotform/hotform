@@ -25,7 +25,10 @@ const bundles = [
       BUNDLE_TYPE.CJS_PROD,
       BUNDLE_TYPE.ESM
     ],
-    external: [ 'react' ],
+    external: [
+      'react',
+      'tslib'
+    ],
     packageName: '@hotform/utils',
     typeDeclarations: true
   },
@@ -35,7 +38,11 @@ const bundles = [
       BUNDLE_TYPE.CJS_PROD,
       BUNDLE_TYPE.ESM
     ],
-    external: [ 'react' ],
+    external: [
+      '@hotform/utils',
+      'react',
+      'tslib'
+    ],
     packageName: '@hotform/react',
     typeDeclarations: true
   }
