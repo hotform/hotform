@@ -10,7 +10,7 @@ export interface HotFormValues<T>{
   submitting: boolean;
 }
 
-export enum HotFormActionType{
+export const enum HotFormActionType{
   RESET_SCHEMA = 'RESET_SCHEMA',
   RUN_VALIDITY_EVENTS = 'RUN_VALIDITY_EVENTS',
   SET_SCHEMA_FIELD_VALUE = 'SET_SCHEMA_FIELD_VALUE',
