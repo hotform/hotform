@@ -12,6 +12,8 @@ export interface HotFormValidityEvent<T>{
   setSubmitting: (value: boolean) => void;
 }
 
+export type HotFormInvalidityEventHandler<T> = (e: Pick<HotFormValidityEvent<T>, 'fieldValues'>) => void;
+
 export type HotFormValidityEventHandler<T> = (e: HotFormValidityEvent<T>) => void;
 
 export type HotFormResetEventHandler<T> = (fieldValues: T) => void;

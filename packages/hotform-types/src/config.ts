@@ -56,7 +56,7 @@ export interface HotFormConfig<T>{
   initialSchema: Schema.HotFormSchema<T>;
   
   /** The `onInvalid` callback is executed when the field values are invalid and the form is submitted. */
-  onInvalid?: Events.HotFormValidityEventHandler<T>;
+  onInvalid?: Events.HotFormInvalidityEventHandler<T>;
   
   /** The `onReset` callback is executed when the form is reset. */
   onReset?: Events.HotFormResetEventHandler<T>;
