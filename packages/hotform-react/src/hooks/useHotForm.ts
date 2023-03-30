@@ -1,37 +1,23 @@
 import React from 'react';
 
-/* Hooks */
-import { useStateWithCallbackLazy } from '@hotform/utils';
-
 /* Types */
 import {
-  GetHotFormSchemaFieldValues,
   HotFormChangeEventHandler,
   HotFormEventHandler,
   HotFormFocusEventHandler,
+  HotFormActionType,
   HotFormValidityEvent,
   HotFormSchema,
-  ResetHotFormSchema,
-  SetHotFormSchemaFieldValue,
   HotFormConfig,
-  UseHotFormReturnType,
-  ValidateHotFormSchemaField,
-  ValidateAllHotFormSchemaFields
+  UseHotFormReturnType
 } from '@hotform/types';
 
-const parseInitialSchema = <T>(schema: HotFormSchema<T>): HotFormSchema<T> => (
-  Object.entries<HotFormSchema<T>[keyof T]>(schema).reduce((previousValue, [ currentKey, currentSchemaField ]) => ({
-    ...previousValue,
-    [currentKey]: {
-      ...currentSchemaField,
-      valid: currentSchemaField.valid === undefined ? (
-        currentSchemaField.validator ? (
-          currentSchemaField.validator(currentSchemaField.value)
-        ) : true
-      ) : currentSchemaField.valid
-    }
-  }), {}) as HotFormSchema<T>
-);
+/* Utils */
+import {
+  getHotFormSchemaFieldValues,
+  useEventHandler,
+  useHotFormValues
+} from '@hotform/utils';
 
 const useHotForm = <T>({
   hotField = true,
@@ -40,60 +26,40 @@ const useHotForm = <T>({
   onReset,
   onValid
 }: HotFormConfig<T>): UseHotFormReturnType<T> => {
-  const [ currentSchema, setCurrentSchema ] = React.useState(parseInitialSchema(initialSchema));
-  const [ submitting, setSubmitting ] = useStateWithCallbackLazy(false);
+  const [ state, dispatch ] = useHotFormValues({
+    hotField,
+    initialSchema
+  });
   
-  const getSchemaFieldValues: GetHotFormSchemaFieldValues<T> = React.useCallback(() => (
-    Object.entries<HotFormSchema<T>[keyof T]>(currentSchema).reduce((previousValue, [ currentKey, currentSchemaField ]) => ({
-      ...previousValue,
-      [currentKey]: currentSchemaField.value
-    }), {}) as T
-  ), [ currentSchema ]);
+  const resetSchema: UseHotFormReturnType<T>['resetSchema'] = React.useCallback(() => {
+    onReset?.(getHotFormSchemaFieldValues(state.currentSchema));
+    dispatch({
+      type: HotFormActionType.RESET_SCHEMA
+    });
+  }, [ onReset, state.currentSchema ]);
   
-  const resetSchema: ResetHotFormSchema = React.useCallback(() => {
-    onReset?.(getSchemaFieldValues());
-    setCurrentSchema(parseInitialSchema(initialSchema));
-  }, [ getSchemaFieldValues, initialSchema, onReset ]);
+  const setSchemaFieldValue: UseHotFormReturnType<T>['setSchemaFieldValue'] = React.useCallback((fieldName, newFieldValue) => {
+    dispatch({
+      payload: {
+        fieldName,
+        newFieldValue
+      },
+      type: HotFormActionType.SET_SCHEMA_FIELD_VALUE
+    });
+  }, []);
   
-  const validateSchemaField: ValidateHotFormSchemaField<T> = React.useCallback(fieldName => {
-    const nextSchema = { ...currentSchema };
-    const currentSchemaField = nextSchema[fieldName];
-    if(!currentSchemaField) return false;
-    if(currentSchemaField.validator){
-      currentSchemaField.valid = currentSchemaField.validator(currentSchemaField.value);
-      setCurrentSchema(nextSchema);
-    }
-    return !!currentSchemaField.valid;
-  }, [ currentSchema ]);
+  const handleBlur: UseHotFormReturnType<T>['handleBlur'] = useEventHandler(e => {
+    dispatch({
+      payload: {
+        fieldName: e.target.name as keyof HotFormSchema<T>
+      },
+      type: HotFormActionType.VALIDATE_SCHEMA_FIELD
+    });
+  });
   
-  const setSchemaFieldValue: SetHotFormSchemaFieldValue<T> = React.useCallback((fieldName, newFieldValue) => {
-    const nextSchema = { ...currentSchema };
-    const currentSchemaField = nextSchema[fieldName];
-    if(currentSchemaField){
-      currentSchemaField.value = newFieldValue;
-      setCurrentSchema(nextSchema);
-      if(hotField) validateSchemaField(fieldName);
-    }
-  }, [ currentSchema, hotField, validateSchemaField ]);
-  
-  const validateAllSchemaFields: ValidateAllHotFormSchemaFields = React.useCallback(() => {
-    let numberOfFields = 0;
-    const numberOfValidFields = Object.keys(currentSchema).reduce((previousValue, currentKey) => {
-      numberOfFields ++;
-      return +validateSchemaField(currentKey as keyof HotFormSchema<T>) + previousValue;
-    }, 0);
-    return numberOfValidFields === numberOfFields;
-  }, [ currentSchema, validateSchemaField ]);
-  
-  const handleBlur: HotFormFocusEventHandler = React.useCallback(e => {
+  const handleChange: UseHotFormReturnType<T>['handleChange'] = useEventHandler(e => {
     const fieldName = e.target.name as keyof HotFormSchema<T>;
-    validateSchemaField(fieldName);
-  }, [ validateSchemaField ]);
-  
-  const handleChange: HotFormChangeEventHandler = React.useCallback(e => {
-    const nextSchema = { ...currentSchema };
-    const fieldName = e.target.name as keyof HotFormSchema<T>;
-    const currentSchemaField = nextSchema[fieldName];
+    const currentSchemaField = { ...state.currentSchema[fieldName] };
     if(currentSchemaField){
       switch(e.target.type){
         case 'checkbox':
@@ -126,36 +92,57 @@ const useHotForm = <T>({
           currentSchemaField.value = currentSchemaField.parseValue ? currentSchemaField.parseValue(e.target.value) : e.target.value;
           break;
       }
-      setCurrentSchema(nextSchema);
-      if(hotField) validateSchemaField(fieldName);
+      setSchemaFieldValue(fieldName, currentSchemaField.value);
     }
-  }, [ currentSchema, hotField, validateSchemaField ]);
+  });
   
-  const handleReset: HotFormEventHandler = React.useCallback(e => {
+  const handleReset: UseHotFormReturnType<T>['handleReset'] = useEventHandler(e => {
     e.preventDefault();
     resetSchema();
-  }, [ resetSchema ]);
+  });
   
-  const handleSubmit: HotFormEventHandler = React.useCallback(e => {
+  const handleSubmit: UseHotFormReturnType<T>['handleSubmit'] = useEventHandler(e => {
     e.preventDefault();
-    const validityEvent: HotFormValidityEvent<T> = {
-      fieldValues: getSchemaFieldValues(),
-      setSubmitting
-    };
-    validateAllSchemaFields()
-      ? setSubmitting(true, () => onValid?.(validityEvent))
-      : onInvalid?.(validityEvent);
-  }, [ getSchemaFieldValues, onInvalid, onValid, setSubmitting, validateAllSchemaFields ]);
+    dispatch({
+      type: HotFormActionType.SUBMITTING
+    });
+    Object.keys(state.currentSchema).forEach(currentKey => {
+      const fieldName = currentKey as keyof HotFormSchema<T>;
+      dispatch({
+        payload: {
+          fieldName
+        },
+        type: HotFormActionType.VALIDATE_SCHEMA_FIELD
+      });
+    });
+    dispatch({
+      type: HotFormActionType.RUN_VALIDITY_EVENTS,
+      payload: {
+        setSubmitting(value){
+          dispatch({
+            type: value ? HotFormActionType.SUBMITTING : HotFormActionType.SUBMITTED
+          });
+        },
+        onFinally(){
+          dispatch({
+            type: HotFormActionType.SUBMITTED
+          });
+        },
+        onInvalid,
+        onValid
+      }
+    });
+  });
   
   return {
-    currentSchema,
+    currentSchema: state.currentSchema,
     handleBlur,
     handleChange,
     handleReset,
     handleSubmit,
     resetSchema,
     setSchemaFieldValue,
-    submitting
+    submitting: state.submitting
   };
 }
 
@@ -165,8 +152,6 @@ export {
   HotFormFocusEventHandler,
   HotFormValidityEvent,
   HotFormSchema,
-  ResetHotFormSchema,
-  SetHotFormSchemaFieldValue,
   HotFormConfig,
   UseHotFormReturnType
 };
