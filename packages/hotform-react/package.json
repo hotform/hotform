@@ -1,6 +1,6 @@
 {
   "name": "@hotform/react",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "@hotform/react is a JavaScript library for building React custom forms",
   "author": "Derry Sucari <derrysucari01@gmail.com>",
   "bugs": {
@@ -32,11 +32,11 @@
   },
   "types": "build/types/index.d.ts",
   "dependencies": {
-    "@hotform/utils": "^1.1.0",
+    "@hotform/utils": "^1.2.0",
     "tslib": "^2.5.0"
   },
   "devDependencies": {
-    "@hotform/types": "^1.4.0",
+    "@hotform/types": "^1.5.0",
     "@types/react": "^16.0.0"
   },
   "peerDependencies": {
