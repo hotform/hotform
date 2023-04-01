@@ -18,9 +18,11 @@ import {
 
 const useHotFormValues = <T>({
   hotField = true,
-  initialSchema
-}: Pick<HotFormConfig<T>, 'hotField' | 'initialSchema'>): UseHotFormValuesReturnType<T> => (
-  React.useReducer<HotFormReducer<T>>((prevState, action) => {
+  initialSchema,
+  onInvalid,
+  onValid
+}: Pick<HotFormConfig<T>, 'hotField' | 'initialSchema' | 'onInvalid' | 'onValid'>): UseHotFormValuesReturnType<T> => {
+  const [ state, dispatch ] = React.useReducer<HotFormReducer<T>>((prevState, action) => {
     switch(action.type){
       case HotFormActionType.RESET_SCHEMA: {
         return {
@@ -29,44 +31,28 @@ const useHotFormValues = <T>({
         };
       }
       case HotFormActionType.RUN_VALIDITY_EVENTS: {
-        const currentSchemaKeys = Object.keys(prevState.currentSchema);
-        
-        const numberOfValidFields = currentSchemaKeys.reduce((previousValue, currentKey) => {
-          const fieldName = currentKey as keyof HotFormSchema<T>;
-          return +!!prevState.currentSchema[fieldName].valid + previousValue;
-        }, 0);
-        
-        const validSchema = numberOfValidFields === currentSchemaKeys.length;
-        
-        const fieldValues = getHotFormSchemaFieldValues(prevState.currentSchema);
-        
-        if(validSchema){
-          const callbackResult = action.payload.onValid?.({
-            fieldValues,
-            setSubmitting: action.payload.setSubmitting
-          });
-          if(callbackResult !== undefined){
-            Promise.resolve(callbackResult).finally(action.payload.onFinally);
-          }
-        }else{
-          action.payload.onInvalid?.({ fieldValues });
-          action.payload.onFinally();
-        }
-        
-        return { ...prevState };
+        return {
+          ...prevState,
+          runValidityEvents: action.payload
+        };
       }
       case HotFormActionType.SET_SCHEMA_FIELD_VALUE: {
+        const nextSchema = { ...prevState.currentSchema };
         const fieldName = action.payload.fieldName;
-        const currentSchemaField = prevState.currentSchema[fieldName];
+        const currentSchemaField = nextSchema[fieldName];
         if(currentSchemaField){
           currentSchemaField.value = action.payload.newFieldValue;
-          if(hotField) validateSchemaField(prevState.currentSchema, fieldName);
+          if(hotField) validateSchemaField(nextSchema, fieldName);
         }
-        return { ...prevState };
+        return {
+          ...prevState,
+          currentSchema: nextSchema
+        };
       }
       case HotFormActionType.SUBMITTED: {
         return {
           ...prevState,
+          runValidityEvents: false,
           submitting: false
         };
       }
@@ -76,9 +62,14 @@ const useHotFormValues = <T>({
           submitting: true
         };
       }
-      case HotFormActionType.VALIDATE_SCHEMA_FIELD: {
-        validateSchemaField(prevState.currentSchema, action.payload.fieldName);
-        return { ...prevState };
+      case HotFormActionType.VALIDATE_SCHEMA_FIELDS: {
+        const nextSchema = { ...prevState.currentSchema };
+        const fieldNames = action.payload;
+        fieldNames.forEach(fieldName => validateSchemaField(nextSchema, fieldName));
+        return {
+          ...prevState,
+          currentSchema: nextSchema
+        };
       }
       default: {
         throw new Error(`Unknown action: ${(action as any).type}`);
@@ -86,9 +77,50 @@ const useHotFormValues = <T>({
     }
   }, {
     currentSchema: parseInitialSchema(initialSchema),
+    runValidityEvents: false,
     submitting: false
-  })
-);
+  });
+  
+  React.useEffect(() => {
+    if(state.runValidityEvents){
+      const fieldValues = getHotFormSchemaFieldValues(state.currentSchema);
+      const currentSchemaKeys = Object.keys(state.currentSchema);
+      const numberOfValidFields = currentSchemaKeys.reduce((previousValue, currentKey) => {
+        const fieldName = currentKey as keyof HotFormSchema<T>;
+        return +!!state.currentSchema[fieldName].valid + previousValue;
+      }, 0);
+      if(numberOfValidFields === currentSchemaKeys.length){
+        const callbackResult = onValid?.({
+          fieldValues,
+          setSubmitting(value){
+            dispatch({
+              type: value ? HotFormActionType.SUBMITTING : HotFormActionType.SUBMITTED
+            });
+          }
+        });
+        Promise.resolve(callbackResult).finally(() => {
+          if(callbackResult === undefined){
+            dispatch({
+              payload: false,
+              type: HotFormActionType.RUN_VALIDITY_EVENTS
+            });
+          }else{
+            dispatch({
+              type: HotFormActionType.SUBMITTED
+            });
+          }
+        });
+      }else{
+        onInvalid?.({ fieldValues });
+        dispatch({
+          type: HotFormActionType.SUBMITTED
+        });
+      }
+    }
+  }, [ state.runValidityEvents ]);
+  
+  return [ state, dispatch ];
+}
 
 export {
   HotFormActionType,
