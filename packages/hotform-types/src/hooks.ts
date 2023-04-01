@@ -2,7 +2,7 @@ import * as Events from './events';
 import * as Schema from './schema';
 import * as Utils from './utils';
 
-export interface UseHotFormReturnType<T> extends Utils.HotFormValues<T>{
+export interface UseHotFormReturnType<T> extends Pick<Utils.HotFormValues<T>, 'currentSchema' | 'submitting'>{
   /** Hot form focus event handler. */
   handleBlur: Events.HotFormFocusEventHandler;
   
