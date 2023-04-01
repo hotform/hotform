@@ -28,7 +28,9 @@ const useHotForm = <T>({
 }: HotFormConfig<T>): UseHotFormReturnType<T> => {
   const [ state, dispatch ] = useHotFormValues({
     hotField,
-    initialSchema
+    initialSchema,
+    onInvalid,
+    onValid
   });
   
   const resetSchema: UseHotFormReturnType<T>['resetSchema'] = React.useCallback(() => {
@@ -36,7 +38,7 @@ const useHotForm = <T>({
     dispatch({
       type: HotFormActionType.RESET_SCHEMA
     });
-  }, [ onReset, state.currentSchema ]);
+  }, [ state.currentSchema ]);
   
   const setSchemaFieldValue: UseHotFormReturnType<T>['setSchemaFieldValue'] = React.useCallback((fieldName, newFieldValue) => {
     dispatch({
@@ -50,10 +52,10 @@ const useHotForm = <T>({
   
   const handleBlur: UseHotFormReturnType<T>['handleBlur'] = useEventHandler(e => {
     dispatch({
-      payload: {
-        fieldName: e.target.name as keyof HotFormSchema<T>
-      },
-      type: HotFormActionType.VALIDATE_SCHEMA_FIELD
+      payload: [
+        e.target.name as keyof HotFormSchema<T>
+      ],
+      type: HotFormActionType.VALIDATE_SCHEMA_FIELDS
     });
   });
   
@@ -106,31 +108,13 @@ const useHotForm = <T>({
     dispatch({
       type: HotFormActionType.SUBMITTING
     });
-    Object.keys(state.currentSchema).forEach(currentKey => {
-      const fieldName = currentKey as keyof HotFormSchema<T>;
-      dispatch({
-        payload: {
-          fieldName
-        },
-        type: HotFormActionType.VALIDATE_SCHEMA_FIELD
-      });
+    dispatch({
+      payload: Object.keys(state.currentSchema) as Array<keyof HotFormSchema<T>>,
+      type: HotFormActionType.VALIDATE_SCHEMA_FIELDS
     });
     dispatch({
-      type: HotFormActionType.RUN_VALIDITY_EVENTS,
-      payload: {
-        setSubmitting(value){
-          dispatch({
-            type: value ? HotFormActionType.SUBMITTING : HotFormActionType.SUBMITTED
-          });
-        },
-        onFinally(){
-          dispatch({
-            type: HotFormActionType.SUBMITTED
-          });
-        },
-        onInvalid,
-        onValid
-      }
+      payload: true,
+      type: HotFormActionType.RUN_VALIDITY_EVENTS
     });
   });
   
