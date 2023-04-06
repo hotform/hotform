@@ -1,7 +1,7 @@
 import * as Schema from './schema';
 
 export interface HotFormValues<T>{
-  /** Current hot form schema. */
+  /** Current HotForm schema. */
   currentSchema: Schema.HotFormSchema<T>;
   
   /** `runValidityEvents` state. */

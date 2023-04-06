@@ -3,10 +3,10 @@ import * as Schema from './schema';
 import * as Utils from './utils';
 
 export interface UseHotFormReturnType<T> extends Pick<Utils.HotFormValues<T>, 'currentSchema' | 'submitting'>{
-  /** Hot form focus event handler. */
+  /** HotForm focus event handler. */
   handleBlur: Events.HotFormFocusEventHandler;
   
-  /** Hot form change event handler. */
+  /** HotForm change event handler. */
   handleChange: Events.HotFormChangeEventHandler;
   
   /** Form reset event handler. */
@@ -15,9 +15,9 @@ export interface UseHotFormReturnType<T> extends Pick<Utils.HotFormValues<T>, 'c
   /** Form submit event handler. */
   handleSubmit: Events.HotFormEventHandler;
   
-  /** Function to reset hot form schema. */
+  /** Function to reset HotForm schema. */
   resetSchema: Schema.ResetHotFormSchema;
   
-  /** Function to set hot form field value. */
+  /** Function to set HotForm field value. */
   setSchemaFieldValue: Schema.SetHotFormSchemaFieldValue<T>;
 }

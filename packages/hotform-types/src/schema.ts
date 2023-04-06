@@ -5,10 +5,10 @@ export type HotFormSchemaFieldParseValue = (value: any) => any;
 export interface HotFormSchemaField<T>{
   /** Parses the value provided by `React.ChangeEvent<any>` to use as the current value of the field. In the case of arrays, it parses the value of each element of the array. */
   parseValue?: HotFormSchemaFieldParseValue;
-
+  
   /** Indicates the current validity of the field. */
   valid?: boolean;
-
+  
   /**
    * A custom validator function allowing you to apply your own validation rules.
    * 

@@ -5,54 +5,7 @@ export interface HotFormConfig<T>{
   /** If set to `true`, the field that changes its value will be validated. By default `true` is used. */
   hotField?: boolean;
   
-  /**
-   * Initial hot form schema.
-   * 
-   * Simple examples:
-   * 
-   * JavaScript
-   * 
-   * ```js
-   * const userSchema = {
-   *   password: {
-   *     valid: true,
-   *     validator: value => value.length,
-   *     value: ''
-   *   },
-   *   username: {
-   *     valid: true,
-   *     validator: value => value.length,
-   *     value: ''
-   *   }
-   * };
-   * 
-   * console.log(JSON.stringify(userSchema, null, 2));
-   * ```
-   * 
-   * TypeScript
-   * 
-   * ```ts
-   * interface UserData{
-   *   password: string;
-   *   username: string;
-   * }
-   * 
-   * const userSchema: HotFormSchema<UserData> = {
-   *   password: {
-   *     valid: true,
-   *     validator: (value: string) => !!value.length,
-   *     value: ''
-   *   },
-   *   username: {
-   *     valid: true,
-   *     validator: (value: string) => !!value.length,
-   *     value: ''
-   *   }
-   * };
-   * 
-   * console.log(JSON.stringify(userSchema, null, 2));
-   * ```
-   * */
+  /** Initial HotForm schema. */
   initialSchema: Schema.HotFormSchema<T>;
   
   /** The `onInvalid` callback is executed when the field values are invalid and the form is submitted. */
