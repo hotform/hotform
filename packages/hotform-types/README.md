@@ -1,3 +1,3 @@
 # @hotform/types
 
-This package contains type definitions for hotform.
+This package contains type definitions for HotForm.

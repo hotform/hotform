@@ -1,7 +1,7 @@
 {
   "name": "@hotform/utils",
   "version": "1.2.0",
-  "description": "Utilities for hotform",
+  "description": "Utilities for HotForm",
   "author": "Derry Sucari <derrysucari01@gmail.com>",
   "bugs": {
     "url": "https://github.com/hotform/hotform/issues"

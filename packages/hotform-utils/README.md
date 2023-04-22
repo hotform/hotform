@@ -1,3 +1,3 @@
 # @hotform/utils
 
-This package contains utilities for hotform.
+This package contains utilities for HotForm.
