@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "lib": [
+      "DOM",
+      "ESNext"
+    ]
+  },
+  "extends": "./tsconfig.base.json",
+  "include": [
+    "__tests__"
+  ]
+}
