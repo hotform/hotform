@@ -53,6 +53,18 @@ describe('useHotFormValues', () => {
     });
   });
   
+  it('MUST initialize `runValidityEvents` to `false`', () => {
+    const { result } = renderUseHotFormValues({ initialSchema });
+    
+    expect(result.current.state.runValidityEvents).toBe(false);
+  });
+  
+  it('MUST initialize `submitting` to `false`', () => {
+    const { result } = renderUseHotFormValues({ initialSchema });
+    
+    expect(result.current.state.submitting).toBe(false);
+  });
+  
   it('SHOULD run validators by default. If they exist', () => {
     const { result } = renderUseHotFormValues({ initialSchema });
     
@@ -72,11 +84,11 @@ describe('useHotFormValues', () => {
   
   describe('RESET_SCHEMA', () => {
     it('SHOULD reset schema when action is dispatched', () => {
+      const { result } = renderUseHotFormValues({ initialSchema });
       const nextFieldValues: FormData = {
         ticketNumber: 100,
         username: 'foo'
       };
-      const { result } = renderUseHotFormValues({ initialSchema });
       
       Object.entries(nextFieldValues).forEach(([ key, value ]) => {
         act(() => result.current.dispatch({
@@ -161,5 +173,103 @@ describe('useHotFormValues', () => {
         setSubmitting: expect.any(Function)
       }));
     });
-  });  
+  });
+  
+  describe('SET_SCHEMA_FIELD_VALUE', () => {
+    it('MUST update field values based on field name', () => {
+      const { result } = renderUseHotFormValues({ initialSchema });
+      const expectedFieldValues: FormData = {
+        ticketNumber: 100,
+        username: 'foo'
+      };
+      
+      Object.entries(expectedFieldValues).forEach(([ key, value ]) => {
+        const fieldName = key as keyof HotFormSchema<FormData>;
+        
+        act(() => result.current.dispatch({
+          payload: {
+            fieldName,
+            newFieldValue: value
+          },
+          type: HotFormActionType.SET_SCHEMA_FIELD_VALUE
+        }));
+        
+        expect(result.current.state.currentSchema[fieldName].value).toBe(value);
+      });
+    });
+  });
+  
+  describe('SUBMITTED', () => {
+    it('SHOULD set `runValidityEvents` to `false` and `submitting` to `false` when action is dispatched', () => {
+      const { result } = renderUseHotFormValues({ initialSchema });
+      
+      act(() => result.current.dispatch({
+        type: HotFormActionType.SUBMITTING
+      }));
+      
+      act(() => result.current.dispatch({
+        type: HotFormActionType.SUBMITTED
+      }));
+      
+      expect([
+        result.current.state.runValidityEvents,
+        result.current.state.submitting
+      ]).toEqual([
+        false,
+        false
+      ]);
+    });
+  });
+  
+  describe('SUBMITTING', () => {
+    it('SHOULD set `submitting` to `true` when action is dispatched', () => {
+      const { result } = renderUseHotFormValues({ initialSchema });
+      
+      act(() => result.current.dispatch({
+        type: HotFormActionType.SUBMITTING
+      }));
+      
+      expect(result.current.state.submitting).toBe(true);
+    });
+  });
+  
+  describe('VALIDATE_SCHEMA_FIELDS', () => {
+    it('MUST validate field values based on field name', () => {
+      const { result } = renderUseHotFormValues({
+        hotField: false,
+        initialSchema
+      });
+      const expectedFieldValues: FormData = {
+        ticketNumber: 100,
+        username: 'foo'
+      };
+      
+      Object.entries(expectedFieldValues).forEach(([ key, value ]) => {
+        const fieldName = key as keyof HotFormSchema<FormData>;
+        
+        act(() => result.current.dispatch({
+          payload: {
+            fieldName,
+            newFieldValue: value
+          },
+          type: HotFormActionType.SET_SCHEMA_FIELD_VALUE
+        }));
+        
+        act(() => result.current.dispatch({
+          payload: [
+            fieldName
+          ],
+          type: HotFormActionType.VALIDATE_SCHEMA_FIELDS
+        }));
+        
+        const currentSchemaField = result.current.state.currentSchema[fieldName];
+        
+        expect(currentSchemaField.valid).toBe(
+          currentSchemaField.validator
+            ? currentSchemaField.validator(currentSchemaField.value)
+            : !!currentSchemaField.valid
+        );
+      });
+    });
+  });
 });
