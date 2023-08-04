@@ -6,7 +6,7 @@
       "ESNext"
     ]
   },
-  "extends": "./tsconfig.base.json",
+  "extends": "./tsconfig.esm.json",
   "include": [
     "__tests__"
   ]
