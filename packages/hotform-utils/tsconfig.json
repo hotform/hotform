@@ -5,6 +5,6 @@
       "ESNext"
     ]
   },
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../tsconfig.esm.json",
   "files": [ "src/index.ts" ]
 }
