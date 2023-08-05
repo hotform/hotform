@@ -1,0 +1,36 @@
+root: true
+env:
+  browser: true
+  es6: true
+  jest: true
+  node: true
+extends:
+  - react-app
+  - standard-with-typescript
+  - plugin:prettier/recommended
+parser: '@typescript-eslint/parser'
+parserOptions:
+  ecmaVersion: latest
+  project:
+    - packages/**/tsconfig.json
+    - tsconfig.cjs.json
+    - tsconfig.test.json
+  sourceType: module
+plugins:
+  - '@typescript-eslint/eslint-plugin'
+rules:
+  '@typescript-eslint/array-type':
+    - error
+    - default: generic
+      readonly: generic
+  '@typescript-eslint/no-unused-vars': off
+  '@typescript-eslint/prefer-optional-chain': off
+  '@typescript-eslint/restrict-template-expressions': off
+  '@typescript-eslint/strict-boolean-expressions': off
+  react/function-component-definition:
+    - error
+    - namedComponents: arrow-function
+      unnamedComponents: arrow-function
+settings:
+  react:
+    version: detect
