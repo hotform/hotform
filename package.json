@@ -42,7 +42,7 @@
   "private": true,
   "scripts": {
     "build:clean": "rimraf ./packages/*/build",
-    "build:rollup": "node ./scripts/rollup/build",
+    "build:rollup": "ts-node ./scripts/rollup/build",
     "build": "yarn build:rollup",
     "lerna": "lerna",
     "lint:eslint": "eslint __tests__ packages scripts jest-setup.ts jest.config.js",

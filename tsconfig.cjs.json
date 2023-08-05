@@ -3,9 +3,5 @@
     "module": "CommonJS"
   },
   "extends": "./tsconfig.base.json",
-  "include": [
-    "scripts",
-    "jest-setup.ts",
-    "jest.config.js"
-  ]
+  "include": ["scripts", "jest-setup.ts", "jest.config.js"]
 }

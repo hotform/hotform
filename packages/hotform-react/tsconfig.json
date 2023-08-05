@@ -1,10 +1,7 @@
 {
   "compilerOptions": {
-    "lib": [
-      "DOM",
-      "ESNext"
-    ]
+    "lib": ["DOM", "ESNext"]
   },
   "extends": "../../tsconfig.esm.json",
-  "files": [ "src/index.ts" ]
+  "files": ["src/index.ts"]
 }

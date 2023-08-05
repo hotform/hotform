@@ -45,39 +45,35 @@ Learn the basics of working with HotForm.
 Create a new component that uses the hook from `@hotform/react`. To start with, add the initial schema and the validity event handler to the hook argument.
 
 ```jsx
-import { useHotForm } from '@hotform/react';
+import { useHotForm } from '@hotform/react'
 
 const BasicForm = () => {
-  const {
-    currentSchema,
-    handleChange,
-    handleSubmit
-  } = useHotForm({
+  const { currentSchema, handleChange, handleSubmit } = useHotForm({
     initialSchema: {
       firstName: {
         validator: value => !!value,
-        value: ''
+        value: '',
       },
       lastName: {
         validator: value => !!value,
-        value: ''
-      }
+        value: '',
+      },
     },
-    async onValid({ fieldValues }){
-      await new Promise(resolve => setTimeout(resolve, 500));
-      alert(JSON.stringify(fieldValues, null, 2));
-    }
-  });
+    async onValid({ fieldValues }) {
+      await new Promise(resolve => setTimeout(resolve, 500))
+      alert(JSON.stringify(fieldValues, null, 2))
+    },
+  })
   return (
-    <form onSubmit={ handleSubmit }>
+    <form onSubmit={handleSubmit}>
       <div>
         <label htmlFor="firstName">First Name</label>
         <input
           id="firstName"
           name="firstName"
-          onChange={ handleChange }
+          onChange={handleChange}
           placeholder="Enter your first name"
-          value={ currentSchema.firstName.value }
+          value={currentSchema.firstName.value}
         />
       </div>
       <div>
@@ -85,17 +81,17 @@ const BasicForm = () => {
         <input
           id="lastName"
           name="lastName"
-          onChange={ handleChange }
+          onChange={handleChange}
           placeholder="Enter your last name"
-          value={ currentSchema.lastName.value }
+          value={currentSchema.lastName.value}
         />
       </div>
       <button type="submit">Submit</button>
     </form>
-  );
+  )
 }
 
-export default BasicForm;
+export default BasicForm
 ```
 
 ### Examples
