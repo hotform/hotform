@@ -13,6 +13,28 @@ on:
       - master
 
 jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version:
+          - 18.x
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set Up Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          cache: yarn
+          node-version: ${{ matrix.node-version }}
+      - name: Install Dependencies
+        run: yarn install --immutable
+      - name: Build
+        run: yarn build
+      - name: Lint
+        run: yarn lint
+
   test:
     runs-on: ubuntu-latest
     strategy:
@@ -32,4 +54,4 @@ jobs:
       - name: Build
         run: yarn build
       - name: Test
-        run: yarn test --forceExit
+        run: yarn test --detectOpenHandles --forceExit --silent
