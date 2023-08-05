@@ -1,0 +1,2 @@
+'*.{js,jsx,json,md,ts,tsx,yml}':
+  - yarn lint:fix
