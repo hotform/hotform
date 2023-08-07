@@ -18,6 +18,6 @@ export type HotFormInvalidityEventHandler<T> = (
 
 export type HotFormValidityEventHandler<T> = (
   e: HotFormValidityEvent<T>,
-) => void
+) => Promise<void> | void
 
 export type HotFormResetEventHandler<T> = (fieldValues: T) => void
