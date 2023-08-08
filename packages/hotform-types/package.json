@@ -1,6 +1,6 @@
 {
   "name": "@hotform/types",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "TypeScript definitions for HotForm.",
   "author": "Derry Sucari <derrysucari01@gmail.com>",
   "bugs": {

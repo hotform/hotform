@@ -1,6 +1,6 @@
 {
   "name": "@hotform/utils",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Utilities for HotForm",
   "author": "Derry Sucari <derrysucari01@gmail.com>",
   "bugs": {
@@ -26,7 +26,7 @@
     "tslib": "^2.5.0"
   },
   "devDependencies": {
-    "@hotform/types": "^1.5.0",
+    "@hotform/types": "^1.5.1",
     "@types/react": "^16.0.0"
   },
   "peerDependencies": {
